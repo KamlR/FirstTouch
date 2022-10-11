@@ -4,27 +4,25 @@
     extern _printf
 
     section .rodata
-    answer db "наибольшее значение аргумента: %llu",10,0
+    answer db "наибольшее возможное значение аргумента: %llu",10,0
 
     section .text
     global _main:
     _main:
-        push rbp
+        push rbp; строки с прологом
         mov rbp, rsp
         sub rsp, 16
-        and rsp, -15 
-        mov rax, 1 
-        mov rcx, 1
+        and rsp, -15 ;выравнивание стека 
+        mov rcx, 1; значение текущего аргумента
     .loop:
         mul rcx
-        jc .end ;выходим из цикла, если случилось переполнение
-        inc rcx ;увечиливаем значение текущего аргумента
-        jmp .loop
+        jc .end ; мнемокод для cf, если случилось переполнение, то выходим
+        inc rcx ; увеличиваем значение аргумента на единицу
+        jmp .loop; переходим снова к началу нашего цикла
     .end:
-        mov rdi, answer ;первый аргумент - форматная строка
-        mov rsi, rcx ;второй аргумент - значение для печати
+        mov rdi, answer ; первым аргументом подётся командная строка
+        mov rsi, rcx ; вторым аргументом подаётся значение для печати
         call _printf ;печатаем результат
-        xor rax, rax ; обнуление rax
         leave
         ret
     .ret:
